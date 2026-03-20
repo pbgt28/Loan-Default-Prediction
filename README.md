@@ -9,6 +9,7 @@ The project applies multiple machine learning algorithms and evaluates them usin
 🎯 Objective
 
 The main objectives of this project are:
+
 	•	Predict the probability of loan default.
 	•	Compare the performance of different machine learning models.
 	•	Handle imbalanced data using techniques like SMOTE.
