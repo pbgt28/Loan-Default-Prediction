@@ -20,6 +20,7 @@ The main objectives of this project are:
 The dataset contains borrower information including financial, demographic, and credit-related features.
 
 Example features include:
+
 	•	Income
 	•	Loan amount
 	•	Credit history
@@ -29,11 +30,13 @@ Example features include:
 	•	Loan status (Target Variable)
 
 Target Variable
+
 	•	Loan Default
 	•	0 → No Default
 	•	1 → Default
 
 ⚙️ Technologies Used
+
 	•	Python
 	•	NumPy
 	•	Pandas
@@ -46,6 +49,7 @@ Target Variable
 🧠 Machine Learning Models Implemented
 
 The following algorithms were used:
+
 	1.	Logistic Regression
 	2.	Random Forest
 	3.	K-Nearest Neighbors (KNN)
@@ -55,6 +59,7 @@ These models were trained and evaluated to determine the most effective approach
 🔧 Data Preprocessing
 
 Steps performed before training the models:
+
 	•	Handling missing values
 	•	Feature encoding
 	•	Feature scaling (for KNN)
@@ -66,6 +71,7 @@ Steps performed before training the models:
 Exploratory Data Analysis was performed to understand the structure of the dataset and identify patterns that influence loan defaults.
 
 Key EDA Steps
+
 	•	Checking dataset shape and structure
 	•	Handling missing values
 	•	Statistical summary of features
@@ -75,6 +81,7 @@ Key EDA Steps
 	•	Identifying class imbalance in the target variable
 
 Visualizations Used
+
 	•	Histograms for feature distribution
 	•	Bar plots for categorical features
 	•	Correlation heatmap
