@@ -10,9 +10,8 @@ The project applies multiple machine learning algorithms and evaluates them usin
 
 The main objectives of this project are:
 
-	•	Predict the probability of loan default.
+	•	Predict the whether a borrower will default on a loan.
 	•	Compare the performance of different machine learning models.
-	•	Handle imbalanced data using techniques like SMOTE.
 	•	Evaluate models using classification metrics and PR curves.
 
 📊 Dataset: https://www.kaggle.com/datasets/nikhil1e9/loan-default
