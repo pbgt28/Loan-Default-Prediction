@@ -30,7 +30,7 @@ import seaborn as sns
 import numpy as np
 
 #load and read the dataset
-df= pd.read_csv('/content/Loan_default.csv')
+df= pd.read_csv('Loan_default.csv')
 
 """The dataset has been loaded successfully."""
 
