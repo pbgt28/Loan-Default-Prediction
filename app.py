@@ -2,43 +2,8 @@ import os
 import joblib
 import pandas as pd
 import streamlit as st
-from sklearn.base import BaseEstimator, TransformerMixin
 
-# Needed for unpickling the custom transformer
-class LoanPreprocessor(BaseEstimator, TransformerMixin):
-    def __init__(self):
-        self.features_order = [
-            'Credit_Score', 'Num_of_Months_Employed', 'Num_of_Credit_Lines', 
-            'Interest_Rate', 'Loan_Amount', 'DTI_Ratio', 'Loan_Term', 
-            'Marital_Status', 'Education', 'Employment_Type', 
-            'Mortgage', 'Dependents', 'Loan_Purpose', 'Co_Signer', 
-            'Age', 'Income'
-        ]
-        self.binary_map = {'Yes': 1, 'No': 0}
-        self.edu_map = {'High School': 0, "Bachelor's": 1, "Master's": 2, 'PhD': 3}
-        self.emp_map = {'Unemployed': 0, 'Self-employed': 1, 'Part-time': 2, 'Full-time': 3}
-        self.marital_map = {'Single': 0, 'Married': 1, 'Divorced': 2}
-        self.purpose_map = {'Auto': 0, 'Business': 1, 'Education': 2, 'Home': 3, 'Other': 4}
-
-    def fit(self, X, y=None):
-        return self
-
-    def transform(self, X):
-        X_copy = X.copy()
-        for col in ['Mortgage', 'Dependents', 'Co_Signer']:
-            if col in X_copy.columns:
-                X_copy[col] = X_copy[col].map(self.binary_map)
-        if 'Education' in X_copy.columns:
-            X_copy['Education'] = X_copy['Education'].map(self.edu_map)
-        if 'Employment_Type' in X_copy.columns:
-            X_copy['Employment_Type'] = X_copy['Employment_Type'].map(self.emp_map)
-        if 'Marital_Status' in X_copy.columns:
-            X_copy['Marital_Status'] = X_copy['Marital_Status'].map(self.marital_map)
-        if 'Loan_Purpose' in X_copy.columns:
-            X_copy['Loan_Purpose'] = X_copy['Loan_Purpose'].map(self.purpose_map)
-        return X_copy[self.features_order]
-
-st.set_page_config(page_title="Loan Default Prediction", layout="wide")
+st.set_page_config(page_title="Loan Default Prediction Dashboard", layout="wide")
 
 @st.cache_resource
 def load_model():
@@ -82,26 +47,42 @@ with st.form("loan_form"):
     submitted = st.form_submit_button("Predict Default Risk")
 
 if submitted:
+    # 1. Exact numeric mappings used during model training in your notebook
+    edu_map = {'High School': 0, "Bachelor's": 1, "Master's": 2, 'PhD': 3}
+    emp_map = {'Unemployed': 0, 'Self-employed': 1, 'Part-time': 2, 'Full-time': 3}
+    marital_map = {'Single': 0, 'Married': 1, 'Divorced': 2}
+    purpose_map = {'Auto': 0, 'Business': 1, 'Education': 2, 'Home': 3, 'Other': 4}
+    binary_map = {'Yes': 1, 'No': 0}
+
+    # 2. Build DataFrame with exact 16-feature order expected by the model
+    features_ordered = [
+        'Credit_Score', 'Num_of_Months_Employed', 'Num_of_Credit_Lines', 
+        'Interest_Rate', 'Loan_Amount', 'DTI_Ratio', 'Loan_Term', 
+        'Marital_Status', 'Education', 'Employment_Type', 
+        'Mortgage', 'Dependents', 'Loan_Purpose', 'Co_Signer', 
+        'Age', 'Income'
+    ]
+
     input_data = pd.DataFrame([{
-        'Age': age,
-        'Income': income,
-        'Loan_Amount': loan_amount,
         'Credit_Score': credit_score,
         'Num_of_Months_Employed': months_employed,
         'Num_of_Credit_Lines': num_credit_lines,
         'Interest_Rate': interest_rate,
-        'Loan_Term': loan_term,
+        'Loan_Amount': loan_amount,
         'DTI_Ratio': dti_ratio,
-        'Education': education,
-        'Employment_Type': employment_type,
-        'Marital_Status': marital_status,
-        'Mortgage': mortgage,
-        'Dependents': dependents,
-        'Loan_Purpose': loan_purpose,
-        'Co_Signer': co_signer
-    }])
+        'Loan_Term': loan_term,
+        'Marital_Status': marital_map[marital_status],
+        'Education': edu_map[education],
+        'Employment_Type': emp_map[employment_type],
+        'Mortgage': binary_map[mortgage],
+        'Dependents': binary_map[dependents],
+        'Loan_Purpose': purpose_map[loan_purpose],
+        'Co_Signer': binary_map[co_signer],
+        'Age': age,
+        'Income': income
+    }])[features_ordered]
 
-    # Predict default probability
+    # 3. Generate prediction
     proba = model.predict_proba(input_data)[0][1]
     
     # 0.35 threshold accounts for the ~11.6% class imbalance in the training data
